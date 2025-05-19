@@ -3,8 +3,6 @@ package org.example.practicaenequipocristianvictoraitornico.players.storage
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.get
-import org.example.practicaenequipocristianvictoraitornico.players.dto.EntrenadorDto
-import org.example.practicaenequipocristianvictoraitornico.players.dto.JugadorDto
 import org.example.practicaenequipocristianvictoraitornico.players.exception.PersonasException
 import org.example.practicaenequipocristianvictoraitornico.players.mappers.PersonaMapper
 import org.example.practicaenequipocristianvictoraitornico.players.models.*
@@ -97,7 +95,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.leerDelArchivo(nonExistentFile)
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${nonExistentFile.path}", result.error.message)
+  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${nonExistentFile.path}", result.error.messager)
  }
 
  @Test
@@ -108,7 +106,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.leerDelArchivo(tempDir)
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempDir.path}", result.error.message)
+  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempDir.path}", result.error.messager)
   tempDir.deleteRecursively()
  }
 
@@ -121,7 +119,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.leerDelArchivo(tempFile)
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempFile.path}", result.error.message)
+  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempFile.path}", result.error.messager)
   tempFile.delete()
  }
 
@@ -133,7 +131,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.leerDelArchivo(tempFile)
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempFile.path}", result.error.message)
+  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${tempFile.path}", result.error.messager)
   tempFile.delete()
  }
 
@@ -145,7 +143,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.leerDelArchivo(invalidFile)
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${invalidFile.path}", result.error.message)
+  assertEquals("El fichero no existe, o no es un fichero o no se puede leer: ${invalidFile.path}", result.error.messager)
  }
 
  @Test
@@ -174,7 +172,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.escribirAUnArchivo(tempFile, listOf(jugador))
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El directorio padre del fichero no existe: ${nonExistentDir.absolutePath}", result.error.message)
+  assertEquals("El directorio padre del fichero no existe: ${nonExistentDir.absolutePath}", result.error.messager)
  }
 
  @Test
@@ -185,7 +183,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.escribirAUnArchivo(File(tempFile.absolutePath), listOf(jugador))
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El directorio padre del fichero no existe: ${tempFile.absolutePath}", result.error.message)
+  assertEquals("El directorio padre del fichero no existe: ${tempFile.absolutePath}", result.error.messager)
   tempFile.delete()
  }
 
@@ -197,7 +195,7 @@ class PersonalStorageBinTest {
   val result = personalStorageBin.escribirAUnArchivo(invalidFile, listOf(jugador))
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El directorio padre del fichero no existe: ${invalidFile.parentFile.absolutePath}", result.error.message)
+  assertEquals("El directorio padre del fichero no existe: ${invalidFile.parentFile.absolutePath}", result.error.messager)
  }
 
  // Helper function to create a temporary directory

@@ -5,8 +5,6 @@ import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.get
 import org.example.practicaenequipocristianvictoraitornico.players.exception.PersonasException
 import org.example.practicaenequipocristianvictoraitornico.players.models.*
-import org.example.practicaenequipocristianvictoraitornico.players.utils.toEspecialidad
-import org.example.practicaenequipocristianvictoraitornico.players.utils.toPosicion
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -73,7 +71,7 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe o no se puede leer: ${nonExistentFile.path}", result.error.message)
+  assertEquals("El fichero no existe o no se puede leer: ${nonExistentFile.path}", result.error.messager)
  }
 
  @Test
@@ -84,7 +82,7 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe o no se puede leer: ${tempDir.path}", result.error.message)
+  assertEquals("El fichero no existe o no se puede leer: ${tempDir.path}", result.error.messager)
   tempDir.deleteRecursively()
  }
 
@@ -97,7 +95,7 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("El fichero no existe o no se puede leer: ${tempFile.path}", result.error.message)
+  assertEquals("El fichero no existe o no se puede leer: ${tempFile.path}", result.error.messager)
   tempFile.delete()
  }
 
@@ -115,7 +113,7 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasInvalidoException)
-  assertEquals("tiene que ser o un jugador o un entrenador", result.error.message)
+  assertEquals("tiene que ser o un jugador o un entrenador", result.error.messager)
   tempFile.delete()
  }
 
@@ -146,7 +144,7 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("No se puede escribir en el archivo debido a que no existe o no es de la extensión adecuada 😔", result.error.message)
+  assertEquals("No se puede escribir en el archivo debido a que no existe o no es de la extensión adecuada 😔", result.error.messager)
  }
 
  @Test
@@ -157,21 +155,30 @@ class PersonalStorageCsvTest {
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("No se puede escribir en el archivo debido a que no existe o no es de la extensión adecuada 😔", result.error.message)
+  assertEquals("No se puede escribir en el archivo debido a que no existe o no es de la extensión adecuada 😔", result.error.messager)
   tempFile.delete()
  }
 
  @Test
  @DisplayName("escribirAUnArchivo debería retornar Err con PersonasStorageException si la persona es de un tipo desconocido")
  fun escribirAUnArchivo_retornaErrConPersonasStorageException_tipoPersonaDesconocido() {
-  val personaDesconocida = object : Persona {}
+  val personaDesconocida = object : Persona(
+   id = 0L,
+   nombre = "Desconocido",
+   apellidos = "Desconocido",
+   fechaNacimiento = LocalDate.of(2000, 1, 1),
+   fechaIncorporacion = LocalDate.now(),
+   salario = 0.0,
+   pais = "Desconocido"
+  ) {}
+
   val tempFile = createTempFile("testEscribirArchivo", ".csv")
 
   val result = personalStorageCsv.escribirAUnArchivo(tempFile, listOf(personaDesconocida))
 
   assertTrue(result.isErr)
   assertTrue(result.error is PersonasException.PersonasStorageException)
-  assertEquals("Tipo de persona desconocido: Persona\$1", result.error.message)
+  assertEquals("Tipo de persona desconocido: Persona\$1", result.error.messager)
   tempFile.delete()
  }
 

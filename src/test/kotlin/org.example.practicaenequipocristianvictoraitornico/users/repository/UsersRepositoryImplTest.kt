@@ -121,7 +121,7 @@ class UsersRepositoryImplTest {
 
   whenever(usersDao.getByName(id)).thenReturn(entityToDelete)
   whenever(mapper.toModel(entityToDelete)).thenReturn(modelToDelete)
-  doNothing().`when`(usersDao).delete(id)
+  doNothing().whenever(usersDao).delete(id)
 
   val result = usersRepository.delete(id)
 
@@ -155,7 +155,7 @@ class UsersRepositoryImplTest {
   val entityToSave = UsersEntity(name = "NewUser", password = "newPass", admin = true)
 
   whenever(mapper.toEntity(userToSave)).thenReturn(entityToSave)
-  doNothing().`when`(usersDao).save(entityToSave)
+  doNothing().whenever(usersDao).save(entityToSave)
 
   val result = usersRepository.save(userToSave)
 

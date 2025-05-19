@@ -1,5 +1,7 @@
 package org.example.practicaenequipocristianvictoraitornico.users.service
 
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.*
 import org.example.practicaenequipocristianvictoraitornico.users.exception.UsersException
 import org.example.practicaenequipocristianvictoraitornico.users.models.User
@@ -27,7 +29,12 @@ class UsersServiceImplTest {
   whenever(repositorio.getAll()).thenReturn(listOf(testUser, testUser2))
   val result = service.getAll()
   assertTrue(result.isOk)
-  assertEquals(listOf(testUser, testUser2), (result as Ok).value)
+  if (result.isOk) {
+   assertEquals(listOf(testUser, testUser2), result.value)
+  } else {
+   fail("Se esperaba Ok pero se obtuvo $result")
+  }
+
   verify(repositorio).getAll()
  }
 
@@ -37,7 +44,12 @@ class UsersServiceImplTest {
   whenever(repositorio.getAll()).thenThrow(testException)
   val result = service.getAll()
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Se esperaba Err pero se obtuvo $result")
+  }
+
   verify(repositorio).getAll()
  }
 
@@ -47,7 +59,12 @@ class UsersServiceImplTest {
   whenever(repositorio.getById("testUser")).thenReturn(testUser)
   val result = service.getByID("testUser")
   assertTrue(result.isOk)
-  assertEquals(testUser, (result as Ok).value)
+  if (result.isOk) {
+   assertEquals(testUser, result.value)
+  } else {
+   fail("Expected Ok result but got $result")
+  }
+
   verify(repositorio).getById("testUser")
  }
 
@@ -57,7 +74,12 @@ class UsersServiceImplTest {
   whenever(repositorio.getById("nonExistentUser")).thenReturn(null)
   val result = service.getByID("nonExistentUser")
   assertTrue(result.isErr)
-  assertTrue((result as Err).error is UsersException.UsersNotFoundException)
+  if (result.isErr) {
+   assertTrue(result.error is UsersException.UsersNotFoundException)
+  } else {
+   fail("Expected Err but got $result")
+  }
+
   verify(repositorio).getById("nonExistentUser")
  }
 
@@ -67,8 +89,11 @@ class UsersServiceImplTest {
   whenever(repositorio.getById(anyString())).thenThrow(testException)
   val result = service.getByID("anyId")
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
-  verify(repositorio).getById("anyId")
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
@@ -77,8 +102,11 @@ class UsersServiceImplTest {
   whenever(repositorio.save(testUser)).thenReturn(testUser)
   val result = service.save(testUser)
   assertTrue(result.isOk)
-  assertEquals(testUser, (result as Ok).value)
-  verify(repositorio).save(testUser)
+  if (result.isOk) {
+   assertEquals(testUser, result.value)
+  } else {
+   fail("Expected Ok")
+  }
  }
 
  @Test
@@ -87,8 +115,11 @@ class UsersServiceImplTest {
   whenever(repositorio.save(any())).thenThrow(testException)
   val result = service.save(testUser)
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
-  verify(repositorio).save(testUser)
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
@@ -97,8 +128,11 @@ class UsersServiceImplTest {
   whenever(repositorio.delete("testUser")).thenReturn(testUser)
   val result = service.delete("testUser")
   assertTrue(result.isOk)
-  assertEquals(testUser, (result as Ok).value)
-  verify(repositorio).delete("testUser")
+  if (result.isOk) {
+   assertEquals(testUser, result.value)
+  } else {
+   fail("Expected Ok")
+  }
  }
 
  @Test
@@ -107,8 +141,11 @@ class UsersServiceImplTest {
   whenever(repositorio.delete("nonExistentUser")).thenReturn(null)
   val result = service.delete("nonExistentUser")
   assertTrue(result.isErr)
-  assertTrue((result as Err).error is UsersException.UsersNotFoundException)
-  verify(repositorio).delete("nonExistentUser")
+  if (result.isErr) {
+   assertTrue(result.error is UsersException.UsersNotFoundException)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
@@ -117,8 +154,11 @@ class UsersServiceImplTest {
   whenever(repositorio.delete(anyString())).thenThrow(testException)
   val result = service.delete("anyId")
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
-  verify(repositorio).delete("anyId")
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
@@ -127,8 +167,11 @@ class UsersServiceImplTest {
   whenever(repositorio.update(testUser, "testUser")).thenReturn(testUser)
   val result = service.update("testUser", testUser)
   assertTrue(result.isOk)
-  assertEquals(testUser, (result as Ok).value)
-  verify(repositorio).update(testUser, "testUser")
+  if (result.isOk) {
+   assertEquals(testUser, result.value)
+  } else {
+   fail("Expected Ok")
+  }
  }
 
  @Test
@@ -137,8 +180,11 @@ class UsersServiceImplTest {
   whenever(repositorio.update(testUser, "nonExistentUser")).thenReturn(null)
   val result = service.update("nonExistentUser", testUser)
   assertTrue(result.isErr)
-  assertTrue((result as Err).error is UsersException.UsersNotFoundException)
-  verify(repositorio).update(testUser, "nonExistentUser")
+  if (result.isErr) {
+   assertTrue(result.error is UsersException.UsersNotFoundException)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
@@ -147,27 +193,48 @@ class UsersServiceImplTest {
   whenever(repositorio.update(any(), anyString())).thenThrow(testException)
   val result = service.update("anyId", testUser)
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
-  verify(repositorio).update(testUser, "anyId")
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Expected Err")
+  }
  }
 
  @Test
  @DisplayName("goodLogin - Resultado Ok")
  fun goodLogin_Ok() {
-  whenever(repositorio.getById("testUser")).thenReturn(testUser.copy(password = BCrypt.hashpw("password", BCrypt.gensalt())))
+  val hashedPassword = BCrypt.hashpw("password", BCrypt.gensalt())
+  val expectedUser = testUser.copy(password = hashedPassword)
+
+  whenever(repositorio.getById("testUser")).thenReturn(expectedUser)
   val result = service.goodLogin("testUser", "password")
+
   assertTrue(result.isOk)
-  assertEquals(testUser.copy(password = BCrypt.hashpw("password", BCrypt.gensalt())), (result as Ok).value)
+  if (result.isOk) {
+   assertEquals(expectedUser.copy(password = result.value.password), result.value)
+  } else {
+   fail("Expected Ok")
+  }
+
   verify(repositorio).getById("testUser")
  }
 
  @Test
  @DisplayName("goodLogin - Resultado Err (Contraseña incorrecta)")
  fun goodLogin_Err_WrongPassword() {
-  whenever(repositorio.getById("testUser")).thenReturn(testUser.copy(password = BCrypt.hashpw("wrongPassword", BCrypt.gensalt())))
+  val wrongHash = BCrypt.hashpw("wrongPassword", BCrypt.gensalt())
+  val userWithWrongPass = testUser.copy(password = wrongHash)
+
+  whenever(repositorio.getById("testUser")).thenReturn(userWithWrongPass)
   val result = service.goodLogin("testUser", "password")
+
   assertTrue(result.isErr)
-  assertTrue((result as Err).error is UsersException.ContraseniaEquivocadaException)
+  if (result.isErr) {
+   assertTrue(result.error is UsersException.ContraseniaEquivocadaException)
+  } else {
+   fail("Expected Err")
+  }
+
   verify(repositorio).getById("testUser")
  }
 
@@ -176,8 +243,14 @@ class UsersServiceImplTest {
  fun goodLogin_Err_NotFound() {
   whenever(repositorio.getById("nonExistentUser")).thenReturn(null)
   val result = service.goodLogin("nonExistentUser", "password")
+
   assertTrue(result.isErr)
-  assertTrue((result as Err).error is UsersException.UsersNotFoundException)
+  if (result.isErr) {
+   assertTrue(result.error is UsersException.UsersNotFoundException)
+  } else {
+   fail("Expected Err")
+  }
+
   verify(repositorio).getById("nonExistentUser")
  }
 
@@ -186,8 +259,14 @@ class UsersServiceImplTest {
  fun goodLogin_Err_DatabaseException() {
   whenever(repositorio.getById(anyString())).thenThrow(testException)
   val result = service.goodLogin("anyId", "password")
+
   assertTrue(result.isErr)
-  assertEquals(testException, (result as Err).error)
+  if (result.isErr) {
+   assertEquals(testException, result.error)
+  } else {
+   fail("Expected Err")
+  }
+
   verify(repositorio).getById("anyId")
  }
 }

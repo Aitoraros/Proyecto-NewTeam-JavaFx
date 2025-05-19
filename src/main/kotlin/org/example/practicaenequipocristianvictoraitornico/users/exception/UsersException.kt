@@ -2,7 +2,7 @@ package org.example.practicaenequipocristianvictoraitornico.users.exception
 
 
 
-abstract class UsersException (val messager: String) {
+abstract class UsersException (val messager: String) : RuntimeException(messager) {
     /**
      * Excepción que indica que no se ha encontrado el usuario buscado.
      *
