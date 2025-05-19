@@ -10,18 +10,19 @@ import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.ButtonType
 import javafx.scene.image.Image
+
 import javafx.scene.layout.Pane
 import javafx.stage.WindowEvent
-import org.example.practicaenequipocristianvictoraitornico.PrincipalController
-import org.example.practicaenequipocristianvictoraitornico.view.acercaDe.AcrecaDeController
-import org.example.practicaenequipocristianvictoraitornico.view.controller.UsersController
+
+import org.example.practicaenequipocristianvictoraitornico.view.acercaDe.AcercaDeController
+
 import org.lighthousegames.logging.logging
-import org.example.practicaenequipocristianvictoraitornico.view.splashScreen.SplashScreenController
-import org.example.practicaenequipocristianvictoraitornico.view.tarjetasJugadores.TarjetasJugadoresController
+
 import java.io.InputStream
 
 
 import java.net.URL
+import java.util.*
 
 val logger = logging()
 
@@ -42,6 +43,7 @@ object RoutesManager {
 
     init {
         logger.debug { "Inicializando RoutesManager" }
+        Locale.setDefault(Locale.forLanguageTag("es-ES"))
     }
 
     /**
@@ -57,7 +59,6 @@ object RoutesManager {
         // Cargamos el FXML del Splash
         val loader = FXMLLoader(getResource(View.SPLASH_SCREEN.fxml))
         val root = loader.load<Pane>()
-        val controller = loader.getController<SplashScreenController>()
         val scene = Scene(root)
 
         // Configuramos la ventana
@@ -65,6 +66,7 @@ object RoutesManager {
             title = "Cargando aplicación..."
             scene.root = root
             isResizable = false
+            icons.add(Image(getResourceAsStream("/icons/IconoLogo.png")))
             this.scene = scene
             centerOnScreen()
             show()
@@ -83,13 +85,13 @@ object RoutesManager {
 
         val loader = FXMLLoader(getResource(View.USER.fxml))
         val root = loader.load<Pane>()
-        val controller = loader.getController<UsersController>()
         val scene = Scene(root)
 
         val loginStage = Stage().apply {
             title = "Iniciar sesión"
             this.scene = scene
             isResizable = false
+            icons.add(Image(getResourceAsStream("/icons/IconoLogo.png")))
             initOwner(owner)
             initModality(Modality.APPLICATION_MODAL)
             centerOnScreen()
@@ -108,13 +110,13 @@ object RoutesManager {
 
         val loader = FXMLLoader(getResource(View.MAIN.fxml))
         val root = loader.load<Pane>()
-        val controller = loader.getController<PrincipalController>()
         val scene = Scene(root)
 
         mainStage.apply {
             title = "Gestor del New Team"
             this.scene = scene
             isResizable = false
+            icons.add(Image(getResourceAsStream("/icons/IconoLogo.png")))
             setOnCloseRequest { onAppExit(it.toString()) }
             centerOnScreen()
             show()
@@ -132,13 +134,14 @@ object RoutesManager {
 
         val loader = FXMLLoader(getResource(View.ACERCA_DE.fxml))
         val root = loader.load<Pane>()
-        val controller = loader.getController<AcrecaDeController>()
+        val controller = loader.getController<AcercaDeController>()
         val scene = Scene(root)
 
         Stage().apply {
             title = "Acerca del programa"
             this.scene = scene
             isResizable = false
+            icons.add(Image(getResourceAsStream("/icons/IconoLogo.png")))
             initOwner(mainStage)
             initModality(Modality.WINDOW_MODAL)
             centerOnScreen()
@@ -153,13 +156,13 @@ object RoutesManager {
 
         val loader = FXMLLoader(getResource(View.TARJETAS_JUGADORES.fxml))
         val root = loader.load<Pane>()
-        val controller = loader.getController<TarjetasJugadoresController>()
         val scene = Scene(root)
 
         Stage().apply {
             title = "Datos de Jugadores"
             this.scene = scene
             isResizable = false
+            icons.add(Image(getResourceAsStream("/icons/IconoLogo.png")))
             initOwner(mainStage)
             initModality(Modality.WINDOW_MODAL)
             centerOnScreen()
@@ -197,12 +200,8 @@ object RoutesManager {
         return app::class.java.getResource(resource)
             ?: throw RuntimeException("Recurso no encontrado: $resource")
     }
-
-    /**
-     * Utilidad para obtener recursos como InputStream.
-     */
     fun getResourceAsStream(resource: String): InputStream {
         return app::class.java.getResourceAsStream(resource)
-            ?: throw RuntimeException("Recurso no encontrado como stream: $resource")
+            ?: throw RuntimeException("No se ha encontrado el recurso como stream: $resource")
     }
 }
